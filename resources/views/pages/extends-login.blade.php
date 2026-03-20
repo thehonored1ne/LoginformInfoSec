@@ -5,13 +5,13 @@
 @section('content')
 {{-- loginform goes here... --}}
 
-<div class="flex h-screen w-full font-['Space_Grotesk'] font-bold">
+<div class="flex h-screen w-full font-['Inter'] font-bold">
 
-    <div class="w-full md:w-1/2 flex items-center justify-center bg-gray-100 ">
+    <div class="w-full md:w-1/2 flex items-center bg-white justify-center">
         <div class="p-8 w-full max-w-md">
 
 
-            <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8 border-2 border-black rounded-2xl border-r-8 border-b-8 bg-white">
+            <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8 rounded-xl bg-white shadow-lg border-2 border-gray-200">
                 <div class="sm:mx-auto sm:w-full sm:max-w-sm">
                     <img src="https://images.vexels.com/media/users/3/137578/isolated/preview/c895a61e637f53ac91d5faf634c84794-cube-logo-geometric-polygonal.png" alt="Your Company" class="mx-auto h-15 w-auto" />
                     <h2 class="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">Sign in to your account</h2>
@@ -20,7 +20,7 @@
                 <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
 
                     {{-- // This form submits the login data to the route named 'login.post' using the POST method. --}}
-                    <form action="{{ route('login.post') }}" method="POST" class="space-y-6">
+                    <form action="{{ route('login.post') }}" method="POST" class="space-y-8">
 
                         {{-- // In Laravel, csrf is a Blade directive used to protect our application from Cross-Site Request Forgery csrf attacks. --}}
                         @csrf
@@ -29,7 +29,7 @@
                         <div>
                             <label for="email" class="block text-sm/6 font-bold text-gray-900">Email address</label>
                             <div class="mt-2">
-                            <input id="email" type="email" value="{{ old('email') }}" name="email" required autocomplete="email" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-2 -outline-offset-1 outline-black placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
+                            <input id="email" type="email" placeholder="Enter your email" value="{{ old('email') }}" name="email" required autocomplete="email" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 ring-2 ring-gray-400 placeholder:text-gray-300 focus:ring-2 focus:ring-indigo-600 outline-none sm:text-sm/6" />
                             </div>
                         </div>
 
@@ -39,14 +39,14 @@
                             <label for="password" class="block text-sm/6 font-bold text-gray-900">Password</label>
                             </div>
                             <div class="mt-2">
-                            <input id="password" type="password" name="password" required autocomplete="current-password" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-2 -outline-offset-1 outline-black placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
+                            <input id="password" type="password" name="password" placeholder="Enter your password" required autocomplete="current-password" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 ring-2 ring-gray-400 placeholder:text-gray-300 focus:ring-2 focus:ring-indigo-600 outline-none sm:text-sm/6" />
                             </div>
                         </div>
 
                         {{-- //This Show Validation Error for email and password. --}}
                         @if($errors->has('email') || $errors->has('password'))
-                            <div class="mt-4 p-3 border rounded border-red-700 bg-red-100 w-full text-center">
-                                <p class="text-xs font-bold text-red-700 uppercase">
+                            <div class="mt-4 p-3 border border-red-500 rounded-md bg-red-50 w-full text-center">
+                                <p class="text-xs font-bold text-red-500 uppercase">
                                     {{ $errors->first('email') ?: $errors->first('password') }}
                                 </p>
                             </div>
@@ -73,7 +73,7 @@
     </div>
 
     {{-- // This second container holds an image. it is hidden in mobile mode. --}}
-    <div class="hidden md:flex md:w-1/2 bg-gray-100 items-center justify-center bg-[url('https://media.newyorker.com/photos/67634c5e2d3906fa2b10d193/16:10/w_2560%2Cc_limit/r45067.jpg')] bg-cover bg-center">
+    <div class="hidden md:flex md:w-1/2 bg-white items-center justify-center bg-contain bg-center" style="background-image: url('{{ asset('assets/bgs/bg5.png') }}'); background-size: 80%; background-repeat: no-repeat;">
     </div>
 
 </div>
