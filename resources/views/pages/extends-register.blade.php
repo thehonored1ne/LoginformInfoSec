@@ -56,13 +56,13 @@
                     </div>
 
                     {{-- //This Show Validation Error for email and password. --}}
-                    @if($errors->has('email') || $errors->has('password'))
-                        <div class="mt-4 p-3 border rounded border-red-700 bg-red-100 w-full text-center">
-                            <p class="text-xs font-bold text-red-800 uppercase">
-                                {{ $errors->first('email') ?: $errors->first('password') }}
-                            </p>
-                        </div>
-                    @endif
+                        @if($errors->has('email') || $errors->has('password'))
+                            <div class="mt-4 p-3 border border-red-500 rounded-md bg-red-50 w-full text-center">
+                                <p class="text-xs font-bold text-red-500 uppercase">
+                                    {{ $errors->first('email') ?: $errors->first('password') }}
+                                </p>
+                            </div>
+                        @endif
 
                     {{-- // Sign up button --}}
                     <div>

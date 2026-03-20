@@ -6,6 +6,7 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Services\AuthService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
 
 class AuthController extends Controller
 {
@@ -47,7 +48,11 @@ class AuthController extends Controller
 
     public function storeRegister(RegisterRequest $request)
     {
-        $this->authService->register($request->validated());
+        try {
+            $this->authService->register($request->validated());
+        } catch (\Exception $e) {
+            return back()->withErrors(['email' => $e->getMessage()])->withInput();
+        }
 
         return redirect()->route('login')->with('success', 'Registration successful!');
     }

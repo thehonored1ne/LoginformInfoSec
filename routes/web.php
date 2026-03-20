@@ -15,7 +15,7 @@ Route::controller(AuthController::class)->group(function () {
 
     // Logic/Action Routes (POST) — rate limited.
     Route::post('/login', 'authenticate')->name('login.post');
-    Route::post('/register', 'storeRegister')->name('register.store');
+    Route::post('/register', 'storeRegister')->name('register.store')->middleware('register.limit');
 
     // Logout doesn't need rate limiting.
     Route::post('/logout', 'logout')->name('logout');
