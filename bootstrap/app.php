@@ -13,6 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'register.limit' => \App\Http\Middleware\RegisterRateLimit::class,
+            'jwt.auth' => \App\Http\Middleware\JwtMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

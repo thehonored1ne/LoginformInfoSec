@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Tests\Feature\JwtAuthTest" file="tests\Feature\JwtAuthTest.php" tests="5" assertions="15" errors="0" failures="1" skipped="0" time="0.545923">
+    <testcase name="a user can login and receive a jwt cookie" file="tests\Feature\JwtAuthTest.php::a user can login and receive a jwt cookie" class="Tests\Feature\JwtAuthTest" classname="Tests.Feature.JwtAuthTest" assertions="3" time="0.389146"/>
+    <testcase name="a user cannot access home page without the jwt cookie" file="tests\Feature\JwtAuthTest.php::a user cannot access home page without the jwt cookie" class="Tests\Feature\JwtAuthTest" classname="Tests.Feature.JwtAuthTest" assertions="2" time="0.075460">
+      <failure type="PHPUnit\Framework\ExpectationFailedException">a user cannot access home page without the jwt cookieFailed asserting that two strings are equal.&#13;
+at vendor\laravel\framework\src\Illuminate\Testing\TestResponseAssert.php:45
+at vendor\laravel\framework\src\Illuminate\Testing\TestResponse.php:408
+at vendor\laravel\framework\src\Illuminate\Testing\TestResponse.php:205
+at tests\Feature\JwtAuthTest.php:33</failure>
+    </testcase>
+    <testcase name="a user can access home page with valid jwt cookie" file="tests\Feature\JwtAuthTest.php::a user can access home page with valid jwt cookie" class="Tests\Feature\JwtAuthTest" classname="Tests.Feature.JwtAuthTest" assertions="1" time="0.036118"/>
+    <testcase name="a user logging out loses the jwt cookie" file="tests\Feature\JwtAuthTest.php::a user logging out loses the jwt cookie" class="Tests\Feature\JwtAuthTest" classname="Tests.Feature.JwtAuthTest" assertions="5" time="0.018676"/>
+    <testcase name="api login returns json with token" file="tests\Feature\JwtAuthTest.php::api login returns json with token" class="Tests\Feature\JwtAuthTest" classname="Tests.Feature.JwtAuthTest" assertions="4" time="0.026523"/>
+  </testsuite>
+</testsuites>

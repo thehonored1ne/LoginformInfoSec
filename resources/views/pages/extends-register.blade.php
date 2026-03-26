@@ -58,15 +58,14 @@
                     {{-- //This Show Validation Error for email and password. --}}
                         @if($errors->has('email') || $errors->has('password'))
                             <div class="mt-4 p-3 border border-red-500 rounded-md bg-red-50 w-full text-center">
-                                <p class="text-xs font-bold text-red-500 uppercase">
+                                <p id="error-message-text" class="text-xs font-bold text-red-500 uppercase">
                                     {{ $errors->first('email') ?: $errors->first('password') }}
                                 </p>
                             </div>
                         @endif
 
-                    {{-- // Sign up button --}}
                     <div>
-                        <button type="submit" class="flex w-full justify-center rounded-md bg-black px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900 transition-all duration-400 cursor-pointer">Sign up</button>
+                        <button id="submitBtn" type="submit" class="flex w-full justify-center rounded-md bg-black px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900 transition-all duration-400 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">Sign up</button>
                     </div>
                     </form>
 
@@ -87,4 +86,65 @@
 
 </div>
 
+@if($errors->has('email') && (str_contains($errors->first('email'), 'Too many registration attempts') || str_contains($errors->first('email'), 'Try again in')))
+    @php
+        // Extract the exact countdown seconds from the validation error output.
+        preg_match('/in (\d+) seconds/', $errors->first('email'), $matches);
+        $lockoutSeconds = $matches[1] ?? 0;
+    @endphp
+    @if($lockoutSeconds > 0)
+    <script>
+        // Store the exact future timestamp when the lockout expires and their email
+        localStorage.setItem('registerLockoutUntil', Date.now() + ({{ $lockoutSeconds }} * 1000));
+        localStorage.setItem('registerLockoutEmail', '{!! addslashes(old('email')) !!}');
+    </script>
+    @endif
+@endif
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const lockoutUntil = localStorage.getItem('registerLockoutUntil');
+        const lockoutEmail = localStorage.getItem('registerLockoutEmail');
+        
+        if (lockoutUntil) {
+            let remainingMs = lockoutUntil - Date.now();
+            let seconds = Math.ceil(remainingMs / 1000);
+            
+            if (seconds > 0) {
+                const btn = document.getElementById('submitBtn');
+                const errorText = document.getElementById('error-message-text');
+                const emailInput = document.getElementById('email');
+                
+                // Repopulate the email field if they navigated away and it's empty
+                if (emailInput && !emailInput.value && lockoutEmail) {
+                    emailInput.value = lockoutEmail;
+                }
+                
+                btn.disabled = true;
+                
+                const countdown = setInterval(() => {
+                    seconds--;
+                    btn.innerHTML = `Please wait ${seconds}s`;
+                    if (errorText && errorText.parentElement.style.display !== 'none') {
+                        errorText.innerHTML = `Too many registration attempts. Try again in ${seconds} seconds.`;
+                    }
+                    
+                    if (seconds <= 0) {
+                        clearInterval(countdown);
+                        localStorage.removeItem('registerLockoutUntil');
+                        localStorage.removeItem('registerLockoutEmail');
+                        btn.disabled = false;
+                        btn.innerHTML = 'Sign up';
+                        if (errorText) errorText.parentElement.style.display = 'none';
+                    }
+                }, 1000);
+                
+                btn.innerHTML = `Please wait ${seconds}s`;
+            } else {
+                localStorage.removeItem('registerLockoutUntil');
+                localStorage.removeItem('registerLockoutEmail');
+            }
+        }
+    });
+</script>
 @endsection

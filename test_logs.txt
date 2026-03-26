@@ -1,0 +1,63 @@
+﻿
+   FAIL  Tests\Unit\JwtServiceTest
+  ⨯ it can generate a valid token  0.02s  
+  ⨯ it can verify a valid token
+  ⨯ it rejects an altered token
+  ──────────────────────────────────────  
+   FAILED  Tests\Uni…  RuntimeException   
+  A facade root has not been set.
+
+  at vendor\laravel\framework\src\Illuminate\Support\Facades\Facade.php:360
+    356▕     {
+    357▕         $instance = static::getFacadeRoot();
+    358▕ 
+    359▕         if (! $instance) {
+  ➜ 360▕             throw new RuntimeException('A facade root has not been set.');
+    361▕         }
+    362▕ 
+    363▕         return $instance->$method(...$args);
+    364▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Support\Facades\Facade.php:360
+  2   tests\Unit\JwtServiceTest.php:9
+
+  ──────────────────────────────────────  
+   FAILED  Tests\Uni…  RuntimeException   
+  A facade root has not been set.
+
+  at vendor\laravel\framework\src\Illuminate\Support\Facades\Facade.php:360
+    356▕     {
+    357▕         $instance = static::getFacadeRoot();
+    358▕ 
+    359▕         if (! $instance) {
+  ➜ 360▕             throw new RuntimeException('A facade root has not been set.');
+    361▕         }
+    362▕ 
+    363▕         return $instance->$method(...$args);
+    364▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Support\Facades\Facade.php:360
+  2   tests\Unit\JwtServiceTest.php:26
+
+  ──────────────────────────────────────  
+   FAILED  Tests\Uni…  RuntimeException   
+  A facade root has not been set.
+
+  at vendor\laravel\framework\src\Illuminate\Support\Facades\Facade.php:360
+    356▕     {
+    357▕         $instance = static::getFacadeRoot();
+    358▕ 
+    359▕         if (! $instance) {
+  ➜ 360▕             throw new RuntimeException('A facade root has not been set.');
+    361▕         }
+    362▕ 
+    363▕         return $instance->$method(...$args);
+    364▕     }
+
+  1   vendor\laravel\framework\src\Illuminate\Support\Facades\Facade.php:360
+  2   tests\Unit\JwtServiceTest.php:43
+
+
+  Tests:    3 failed (0 assertions)
+  Duration: 0.21s
+
