@@ -71,7 +71,7 @@
                 </div>
                 <div class="flex flex-col">
                     <span class="text-sm font-semibold text-gray-900">{{ auth()->user()->name }}</span>
-                    <span class="text-xs text-gray-400">{{ auth()->user()->email }}</span>
+                    <span class="text-xs text-gray-400">{{ auth()->user()->role }}</span>
                 </div>
             </div>
             <form action="{{ route('logout') }}" method="POST">
