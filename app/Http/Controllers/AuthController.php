@@ -5,13 +5,15 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Services\AuthService;
+use App\Services\JwtService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 
 class AuthController extends Controller
 {
     public function __construct(
-        private AuthService $authService
+        private AuthService $authService,
+        private JwtService $jwtService
     ) {}
 
     // --- View Methods ---
@@ -37,30 +39,55 @@ class AuthController extends Controller
     {
         $result = $this->authService->login($request->validated(), $request);
 
-        if ($result !== true) {
+        if ($result === false || is_string($result)) {
             return back()->withErrors([
-                'email' => $result ?: 'Invalid email or password.',
+                'email' => is_string($result) ? $result : 'Invalid email or password.',
             ])->withInput();
         }
 
-        return redirect()->intended('home');
+        // Drop the JWT in an HTTP-only cookie lasting 120 minutes (2 hours).
+        return redirect()->intended('home')->withCookie(cookie('jwt_token', $result['token'], 120));
     }
 
     public function storeRegister(RegisterRequest $request)
     {
         try {
-            $this->authService->register($request->validated());
+            $user = $this->authService->register($request->validated());
+            $token = $this->jwtService->generateToken($user);
         } catch (\Exception $e) {
             return back()->withErrors(['email' => $e->getMessage()])->withInput();
         }
 
-        return redirect()->route('login')->with('success', 'Registration successful!');
+        // Instantly log them in by dropping the JWT into a cookie upon registration
+        return redirect()->intended('home')->withCookie(cookie('jwt_token', $token, 120));
     }
 
     public function logout(Request $request)
     {
-        $this->authService->logout($request);
+        // For JWT Web sessions, just forget the browser cookie.
+        return redirect('/')->withoutCookie('jwt_token');
+    }
 
-        return redirect('/');
+    public function apiLogin(LoginRequest $request)
+    {
+        $result = $this->authService->apiLogin($request->validated(), $request);
+
+        if (is_string($result)) {
+            return response()->json(['error' => $result], 401);
+        }
+
+        return response()->json([
+            'message' => 'Login successful',
+            'user' => $result['user'],
+            'token' => $result['token']
+        ], 200);
+    }
+
+    public function apiProfile(Request $request)
+    {
+        return response()->json([
+            'message' => 'Profile data retrieved successfully',
+            'user' => \Illuminate\Support\Facades\Auth::user()
+        ], 200);
     }
 }

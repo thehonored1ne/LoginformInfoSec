@@ -91,15 +91,24 @@ class AuthFlowTest extends TestCase
 
     public function test_register_with_valid_data(): void
     {
-        $this->post('/register', [
+        $response = $this->post('/register', [
             'email'                 => 'newuser@test.com',
             'password'              => 'password123',
             'password_confirmation' => 'password123',
-        ])->assertRedirect(route('login'));
+        ]);
+
+        $response->assertRedirect('/home');
+        $response->assertCookie('jwt_token');
 
         $this->assertDatabaseHas('users', [
             'email' => 'newuser@test.com',
         ]);
+
+        // Verify the user can actually use that cookie to see home
+        $cookie = $response->getCookie('jwt_token');
+        $this->withCookie('jwt_token', $cookie->getValue())
+            ->get('/home')
+            ->assertStatus(200);
     }
 
     public function test_register_with_duplicate_email(): void
@@ -136,20 +145,28 @@ class AuthFlowTest extends TestCase
 
     public function test_logout_redirects_to_login(): void
     {
-        $user = $this->createUser();
+        $this->createUser();
+        $loginResponse = $this->loginAs();
 
-        $this->actingAs($user)
+        $cookie = $loginResponse->getCookie('jwt_token');
+
+        $this->withCookie('jwt_token', $cookie->getValue())
             ->post('/logout')
             ->assertRedirect('/');
     }
 
     public function test_logout_clears_session(): void
     {
-        $user = $this->createUser();
+        $this->createUser();
 
-        $this->actingAs($user)->post('/logout');
+        $loginResponse = $this->loginAs();
+        
+        $cookie = $loginResponse->getCookie('jwt_token');
 
-        $this->assertGuest();
+        $logoutResponse = $this->withCookie('jwt_token', $cookie->getValue())->post('/logout');
+
+        // Verify the cookie is expired/cleared
+        $this->assertLessThanOrEqual(time(), $logoutResponse->headers->getCookies()[0]->getExpiresTime());
     }
 
     // -------------------------------------------------------
@@ -163,18 +180,26 @@ class AuthFlowTest extends TestCase
 
     public function test_authenticated_user_can_access_home(): void
     {
-        $user = $this->createUser();
+        $this->createUser();
+        $loginResponse = $this->loginAs();
 
-        $this->actingAs($user)
+        $cookie = $loginResponse->getCookie('jwt_token');
+
+        $this->withCookie('jwt_token', $cookie->getValue())
             ->get('/home')
             ->assertStatus(200);
     }
 
     public function test_authenticated_user_redirects_away_from_login(): void
     {
-        $user = $this->createUser();
+        $this->createUser();
+        $loginResponse = $this->loginAs();
 
-        $this->actingAs($user)
+        $cookie = $loginResponse->getCookie('jwt_token');
+
+        // Currently, you might not have a redirect away from login built-in for JWT users sitting on '/'
+        // But if you do, testing it like this accurately simulates a client.
+        $this->withCookie('jwt_token', $cookie->getValue())
             ->get('/')
             ->assertStatus(200);
     }
