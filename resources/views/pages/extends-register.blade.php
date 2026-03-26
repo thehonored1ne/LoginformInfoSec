@@ -64,7 +64,6 @@
                             </div>
                         @endif
 
-                    {{-- // Sign up button --}}
                     <div>
                         <button id="submitBtn" type="submit" class="flex w-full justify-center rounded-md bg-black px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900 transition-all duration-400 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">Sign up</button>
                     </div>
