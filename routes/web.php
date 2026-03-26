@@ -22,3 +22,12 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/api/login', 'apiLogin')->name('api.login');
     Route::get('/api/profile', 'apiProfile')->name('api.profile')->middleware('jwt.auth');
 });
+
+use App\Http\Controllers\PasswordResetController;
+
+Route::controller(PasswordResetController::class)->group(function () {
+    Route::get('/forgot-password', 'showForgotPassword')->name('password.request');
+    Route::post('/forgot-password', 'sendResetLinkEmail')->name('password.email');
+    Route::get('/reset-password/{token}', 'showResetPassword')->name('password.reset');
+    Route::post('/reset-password', 'resetPassword')->name('password.update');
+});
