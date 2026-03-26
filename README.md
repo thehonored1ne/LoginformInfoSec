@@ -1,59 +1,69 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Nexus - Information Security Management System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Nexus is a premium, secure web application built for an **Information Security** project. It showcases advanced authentication, session management, and defensive layers against common web vulnerabilities.
 
-## About Laravel
+## 🚀 Key Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+*   **Custom JWT Authentication**: Lightweight JSON Web Token implementation for both Web (Cookie-based) and API (Bearer-based) sessions.
+*   **Role-Based Access Control (RBAC)**: Distinct permissions and automatic redirection for `Admin` and `User` roles.
+*   **Secure Password Reset**: Token-based password recovery integrated with Gmail SMTP and featuring 60-minute expiration.
+*   **Interactive UI**: Modern, responsive design with glassmorphism, dynamic backgrounds, and real-time form validation.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🛡️ Security Implementation (OWASP Focused)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+*   **Cryptography**: User passwords are secured using **SHA-256 with random 16-character salts** to prevent rainbow table attacks.
+*   **Brute Force Protection**: 
+    *   Multi-layer rate limiting on Login, Registration, and Password Reset.
+    *   Smart UI countdowns and disabled buttons during lockout periods.
+*   **Injection Defense**: 
+    *   Full protection against **SQL Injection** through Eloquent ORM and Prepared Statements.
+    *   Automatic **XSS (Cross-Site Scripting)** escaping via Blade Templating.
+*   **JWT Integrity**: All sessions are signed with **HS256 HMAC** using a unique server-side secret.
 
-## Learning Laravel
+## 🛠️ Installation & Setup
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+1.  **Clone the repository**:
+    ```bash
+    git clone https://github.com/thehonored1ne/LoginformInfoSec.git
+    cd LoginformInfoSec
+    ```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+2.  **Install dependencies**:
+    ```bash
+    composer install
+    npm install
+    ```
 
-## Laravel Sponsors
+3.  **Environment Configuration**:
+    *   Duplicate `.env.example` to `.env`.
+    *   Generate app key: `php artisan key:generate`.
+    *   Configure your Database (SQLite by default).
+    *   Configure **Gmail SMTP** for the mail system (requires an App Password).
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+4.  **Database Setup**:
+    ```bash
+    php artisan migrate
+    ```
 
-### Premium Partners
+5.  **Run the application**:
+    ```bash
+    php artisan serve
+    npm run dev
+    ```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## 🧪 Security Testing & Audits
 
-## Contributing
+The project includes built-in security audit tests to demonstrate its defenses.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+**Run All Tests**:
+```bash
+php artisan test
+```
 
-## Code of Conduct
+**Specific Security Audits**:
+*   `php artisan test tests/Feature/SecurityAuditTest.php` (SQLi, XSS, RBAC, JWT)
+*   `php artisan test tests/Feature/StressTest.php` (Rate Limiting & Flooding)
+*   `php artisan test tests/Feature/PasswordResetTest.php` (Token logic)
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 📄 License
+This project is open-sourced under the [MIT license](https://opensource.org/licenses/MIT).
