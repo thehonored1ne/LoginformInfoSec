@@ -33,6 +33,11 @@ class AuthController extends Controller
         return view('pages.extends-home');
     }
 
+    public function showUserHomeScreen()
+    {
+        return view('pages.user-dashboard');
+    }
+
     // --- Logic Methods ---
 
     public function authenticate(LoginRequest $request)
@@ -45,8 +50,11 @@ class AuthController extends Controller
             ])->withInput();
         }
 
+        $user = $result['user'];
+        $redirectRoute = $user->role === 'admin' ? 'home' : 'user.home';
+
         // Drop the JWT in an HTTP-only cookie lasting 120 minutes (2 hours).
-        return redirect()->intended('home')->withCookie(cookie('jwt_token', $result['token'], 120));
+        return redirect()->route($redirectRoute)->withCookie(cookie('jwt_token', $result['token'], 120));
     }
 
     public function storeRegister(RegisterRequest $request)
@@ -58,8 +66,10 @@ class AuthController extends Controller
             return back()->withErrors(['email' => $e->getMessage()])->withInput();
         }
 
+        $redirectRoute = $user->role === 'admin' ? 'home' : 'user.home';
+
         // Instantly log them in by dropping the JWT into a cookie upon registration
-        return redirect()->intended('home')->withCookie(cookie('jwt_token', $token, 120));
+        return redirect()->route($redirectRoute)->withCookie(cookie('jwt_token', $token, 120));
     }
 
     public function logout(Request $request)
