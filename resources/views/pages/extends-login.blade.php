@@ -19,6 +19,14 @@
                 </div>
 
                 <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+                    @if(session('status'))
+                        <div class="mb-4 p-3 border border-green-500 rounded-md bg-green-50 w-full text-center">
+                            <p class="text-xs font-bold text-green-500 uppercase">
+                                {{ session('status') }}
+                            </p>
+                        </div>
+                    @endif
+
 
                     {{-- // This form submits the login data to the route named 'login.post' using the POST method. --}}
                     <form action="{{ route('login.post') }}" method="POST" class="space-y-8">
@@ -42,7 +50,11 @@
 
                             <div class="flex items-center justify-between">
                                 <label for="password" class="block text-sm/6 font-bold text-gray-900">Password</label>
+                                <div class="text-sm">
+                                    <a href="{{ route('password.request') }}" class="font-semibold text-black hover:text-indigo-600">Forgot password?</a>
+                                </div>
                             </div>
+
 
                             <div class="mt-2">
                                 <input id="password" type="password" name="password" placeholder="Enter your password" required autocomplete="current-password" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 ring-2 ring-gray-400 placeholder:text-gray-300 focus:ring-2 focus:ring-indigo-600 outline-none sm:text-sm/6" />
