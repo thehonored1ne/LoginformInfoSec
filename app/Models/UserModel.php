@@ -14,6 +14,9 @@ class UserModel extends Authenticatable
 
     protected $table = 'users';
 
+    const ROLE_ADMIN = 'admin';
+    const ROLE_USER = 'user';
+
     /**
      * The attributes that are mass assignable.
      * These are the fields we are sending from the Controller.
@@ -23,6 +26,7 @@ class UserModel extends Authenticatable
         'email',
         'password',
         'salt',
+        'role',
     ];
 
     /**

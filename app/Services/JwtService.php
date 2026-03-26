@@ -22,6 +22,7 @@ class JwtService
         $payload = json_encode([
             'sub' => $user->id,
             'email' => $user->email,
+            'role' => $user->role,
             'iat' => time(),
             'exp' => time() + (60 * 60 * 2) // 2 hours expiration
         ]);

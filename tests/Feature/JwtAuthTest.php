@@ -22,7 +22,7 @@ test('a user can login and receive a jwt cookie', function () {
         'password' => 'supersecret',
     ]);
 
-    $response->assertRedirect('/home');
+    $response->assertRedirect('/dashboard');
     $response->assertCookie('jwt_token');
 });
 
@@ -33,7 +33,7 @@ test('a user cannot access home page without the jwt cookie', function () {
     $response->assertRedirect('/');
 });
 
-test('a user can access home page with valid jwt cookie', function () {
+test('a user can access their dashboard with valid jwt cookie', function () {
     $salt = bin2hex(random_bytes(16));
     $user = UserModel::create([
         'name' => 'Test User 2',
@@ -50,8 +50,8 @@ test('a user can access home page with valid jwt cookie', function () {
     // Extract cookie from the response
     $cookie = $loginResponse->getCookie('jwt_token');
     
-    // Request /home with the cookie
-    $homeResponse = $this->withCookie('jwt_token', $cookie->getValue())->get('/home');
+    // Request /dashboard with the cookie
+    $homeResponse = $this->withCookie('jwt_token', $cookie->getValue())->get('/dashboard');
 
     $homeResponse->assertStatus(200);
 });

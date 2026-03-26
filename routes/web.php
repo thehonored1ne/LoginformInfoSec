@@ -7,7 +7,13 @@ Route::controller(AuthController::class)->group(function () {
 
     Route::get('/', 'showLogin')->name('login');
     Route::get('/register', 'showRegister')->name('register');
-    Route::get('/home', 'showHomeScreen')->name('home')->middleware('jwt.auth');
+    
+    // Admin Only
+    Route::get('/home', 'showHomeScreen')->name('home')->middleware(['jwt.auth', 'role:admin']);
+    
+    // User Only
+    Route::get('/dashboard', 'showUserHomeScreen')->name('user.home')->middleware(['jwt.auth', 'role:user']);
+
     Route::post('/login', 'authenticate')->name('login.post');
     Route::post('/register', 'storeRegister')->name('register.store')->middleware('register.limit');
     Route::post('/logout', 'logout')->name('logout');

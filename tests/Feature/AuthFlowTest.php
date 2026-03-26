@@ -47,7 +47,7 @@ class AuthFlowTest extends TestCase
     {
         $this->createUser();
 
-        $this->loginAs()->assertRedirect('/home');
+        $this->loginAs()->assertRedirect('/dashboard');
     }
 
     public function test_login_with_wrong_password(): void
@@ -97,17 +97,17 @@ class AuthFlowTest extends TestCase
             'password_confirmation' => 'password123',
         ]);
 
-        $response->assertRedirect('/home');
+        $response->assertRedirect('/dashboard');
         $response->assertCookie('jwt_token');
 
         $this->assertDatabaseHas('users', [
             'email' => 'newuser@test.com',
         ]);
 
-        // Verify the user can actually use that cookie to see home
+        // Verify the user can actually use that cookie to see their dashboard
         $cookie = $response->getCookie('jwt_token');
         $this->withCookie('jwt_token', $cookie->getValue())
-            ->get('/home')
+            ->get('/dashboard')
             ->assertStatus(200);
     }
 
@@ -178,7 +178,7 @@ class AuthFlowTest extends TestCase
         $this->get('/home')->assertRedirect('/');
     }
 
-    public function test_authenticated_user_can_access_home(): void
+    public function test_authenticated_user_can_access_dashboard(): void
     {
         $this->createUser();
         $loginResponse = $this->loginAs();
@@ -186,7 +186,7 @@ class AuthFlowTest extends TestCase
         $cookie = $loginResponse->getCookie('jwt_token');
 
         $this->withCookie('jwt_token', $cookie->getValue())
-            ->get('/home')
+            ->get('/dashboard')
             ->assertStatus(200);
     }
 
