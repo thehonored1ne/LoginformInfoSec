@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\RateLimiter;
 
 class PasswordResetController extends Controller
 {
@@ -27,28 +28,15 @@ class PasswordResetController extends Controller
         $request->validate(['email' => 'required|email']);
         
         $email = strtolower(trim($request->email));
-        $key = 'password-reset-limit:' . $email . '|' . $request->ip();
-
-        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($key, 3)) {
-            $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($key);
-            return back()->withErrors([
-                'email' => "Too many reset attempts. Please try again in {$seconds} seconds.",
-            ])->withInput();
-        }
 
         $user = UserModel::where('email', $email)->first();
 
         if (!$user) {
-            \Illuminate\Support\Facades\RateLimiter::hit($key, 60);
             return back()->withErrors(['email' => 'We could not find a user with that email address.']);
         }
 
-
         // Generate a random token
         $token = Str::random(64);
-
-        // Increment rate limit hit to prevent spamming
-        \Illuminate\Support\Facades\RateLimiter::hit($key, 60);
 
         // Store token in password_reset_tokens table
         DB::table('password_reset_tokens')->updateOrInsert(

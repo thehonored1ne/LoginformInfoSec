@@ -7,7 +7,14 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class AuthRateLimitTest extends TestCase
 {
-    use RefreshDatabase; // adds this
+    use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        \Illuminate\Support\Facades\RateLimiter::clear('login:test@test.com|127.0.0.1');
+        \Illuminate\Support\Facades\RateLimiter::clear('register:127.0.0.1');
+    }
 
     public function test_login_is_rate_limited(): void
     {
@@ -31,6 +38,7 @@ class AuthRateLimitTest extends TestCase
             $response = $this->post('/register', [
                 'email'    => "test{$i}@test.com",
                 'password' => 'password123',
+                'password_confirmation' => 'password123',
             ]);
         }
 

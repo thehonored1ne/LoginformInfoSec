@@ -20,20 +20,20 @@ class AuthController extends Controller
 
     public function showLogin()
     {
-        return view('pages.extends-login');
+        return view('pages.login');
     }
 
     public function showRegister()
     {
-        return view('pages.extends-register');
+        return view('pages.register');
     }
 
-    public function showHomeScreen()
+    public function showAdminDashboard()
     {
-        return view('pages.extends-home');
+        return view('pages.admin-dashboard');
     }
 
-    public function showUserHomeScreen()
+    public function showUserDashboard()
     {
         return view('pages.user-dashboard');
     }
@@ -42,16 +42,16 @@ class AuthController extends Controller
 
     public function authenticate(LoginRequest $request)
     {
-        $result = $this->authService->login($request->validated(), $request);
+        $result = $this->authService->login($request->validated(), $request, 'login');
 
-        if ($result === false || is_string($result)) {
+        if (is_string($result)) {
             return back()->withErrors([
-                'email' => is_string($result) ? $result : 'Invalid email or password.',
+                'email' => $result,
             ])->withInput();
         }
 
         $user = $result['user'];
-        $redirectRoute = $user->role === 'admin' ? 'home' : 'user.home';
+        $redirectRoute = $user->role === 'admin' ? 'admin.dashboard' : 'user.dashboard';
 
         // Drop the JWT in an HTTP-only cookie lasting 120 minutes (2 hours).
         return redirect()->route($redirectRoute)->withCookie(cookie('jwt_token', $result['token'], 120));
@@ -66,7 +66,7 @@ class AuthController extends Controller
             return back()->withErrors(['email' => $e->getMessage()])->withInput();
         }
 
-        $redirectRoute = $user->role === 'admin' ? 'home' : 'user.home';
+        $redirectRoute = $user->role === 'admin' ? 'admin.dashboard' : 'user.dashboard';
 
         // Instantly log them in by dropping the JWT into a cookie upon registration
         return redirect()->route($redirectRoute)->withCookie(cookie('jwt_token', $token, 120));
@@ -75,12 +75,13 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         // For JWT Web sessions, just forget the browser cookie.
-        return redirect('/')->withoutCookie('jwt_token');
+        return redirect()->route('login')->withoutCookie('jwt_token');
     }
 
     public function apiLogin(LoginRequest $request)
     {
-        $result = $this->authService->apiLogin($request->validated(), $request);
+        // Use 'login' prefix for everything to prevent multi-point brute force
+        $result = $this->authService->login($request->validated(), $request, 'login');
 
         if (is_string($result)) {
             return response()->json(['error' => $result], 401);

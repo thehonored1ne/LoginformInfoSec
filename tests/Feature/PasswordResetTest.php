@@ -13,6 +13,13 @@ use Carbon\Carbon;
 class PasswordResetTest extends TestCase
 {
     use RefreshDatabase;
+    
+    protected function setUp(): void
+    {
+        parent::setUp();
+        \Illuminate\Support\Facades\RateLimiter::clear('password-reset-limit:test@test.com|127.0.0.1');
+        \Illuminate\Support\Facades\RateLimiter::clear('password-reset-limit:testuser@test.com|127.0.0.1');
+    }
 
     private function createUser(string $email = 'test@test.com', string $password = 'password123'): UserModel
     {

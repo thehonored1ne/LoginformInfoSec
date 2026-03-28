@@ -27,7 +27,7 @@ beforeEach(function () {
     ]);
 });
 
-test('admin can access admin home but not user dashboard', function () {
+test('admin can access admin dashboard but not user dashboard', function () {
     // Login as admin
     $loginResponse = $this->post('/login', [
         'email' => 'admin@example.com',
@@ -36,20 +36,20 @@ test('admin can access admin home but not user dashboard', function () {
     
     $token = $loginResponse->getCookie('jwt_token')->getValue();
 
-    // Access admin home (should work)
+    // Access admin dashboard (should work)
     $this->withCookie('jwt_token', $token)
-        ->get('/home')
+        ->get('/admin-dashboard')
         ->assertStatus(200)
-        ->assertSee('Dashboard') // From admin home
+        ->assertSee('Admin Dashboard')
         ->assertSee('Overview');
 
-    // Access user dashboard (should redirect to admin home)
+    // Access user dashboard (should redirect to admin dashboard)
     $this->withCookie('jwt_token', $token)
-        ->get('/dashboard')
-        ->assertRedirect('/home');
+        ->get('/user-dashboard')
+        ->assertRedirect('/admin-dashboard');
 });
 
-test('regular user can access dashboard but not admin home', function () {
+test('regular user can access dashboard but not admin dashboard', function () {
     // Login as user
     $loginResponse = $this->post('/login', [
         'email' => 'user@example.com',
@@ -60,20 +60,20 @@ test('regular user can access dashboard but not admin home', function () {
 
     // Access user dashboard (should work)
     $this->withCookie('jwt_token', $token)
-        ->get('/dashboard')
+        ->get('/user-dashboard')
         ->assertStatus(200)
         ->assertSee('User Dashboard')
         ->assertSee('Workspace');
 
     // Access admin home (should redirect to user dashboard)
     $this->withCookie('jwt_token', $token)
-        ->get('/home')
-        ->assertRedirect('/dashboard');
+        ->get('/admin-dashboard')
+        ->assertRedirect('/user-dashboard');
 });
 
 test('guest is redirected to login from protected routes', function () {
-    $this->get('/home')->assertRedirect('/');
-    $this->get('/dashboard')->assertRedirect('/');
+    $this->get('/admin-dashboard')->assertRedirect('/login');
+    $this->get('/user-dashboard')->assertRedirect('/login');
 });
 
 test('registration defaults to user role', function () {

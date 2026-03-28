@@ -40,14 +40,14 @@ class AuthFlowTest extends TestCase
 
     public function test_login_page_is_accessible(): void
     {
-        $this->get('/')->assertStatus(200);
+        $this->get('/login')->assertStatus(200);
     }
 
     public function test_login_with_correct_credentials(): void
     {
         $this->createUser();
 
-        $this->loginAs()->assertRedirect('/dashboard');
+        $this->loginAs()->assertRedirect('/user-dashboard');
     }
 
     public function test_login_with_wrong_password(): void
@@ -97,7 +97,7 @@ class AuthFlowTest extends TestCase
             'password_confirmation' => 'password123',
         ]);
 
-        $response->assertRedirect('/dashboard');
+        $response->assertRedirect('/user-dashboard');
         $response->assertCookie('jwt_token');
 
         $this->assertDatabaseHas('users', [
@@ -107,7 +107,7 @@ class AuthFlowTest extends TestCase
         // Verify the user can actually use that cookie to see their dashboard
         $cookie = $response->getCookie('jwt_token');
         $this->withCookie('jwt_token', $cookie->getValue())
-            ->get('/dashboard')
+            ->get('/user-dashboard')
             ->assertStatus(200);
     }
 
@@ -152,7 +152,7 @@ class AuthFlowTest extends TestCase
 
         $this->withCookie('jwt_token', $cookie->getValue())
             ->post('/logout')
-            ->assertRedirect('/');
+            ->assertRedirect('/login');
     }
 
     public function test_logout_clears_session(): void
@@ -173,9 +173,9 @@ class AuthFlowTest extends TestCase
     // Route Protection Tests
     // -------------------------------------------------------
 
-    public function test_guest_cannot_access_home(): void
+    public function test_guest_cannot_access_admin(): void
     {
-        $this->get('/home')->assertRedirect('/');
+        $this->get('/admin-dashboard')->assertRedirect('/login');
     }
 
     public function test_authenticated_user_can_access_dashboard(): void
@@ -186,7 +186,7 @@ class AuthFlowTest extends TestCase
         $cookie = $loginResponse->getCookie('jwt_token');
 
         $this->withCookie('jwt_token', $cookie->getValue())
-            ->get('/dashboard')
+            ->get('/user-dashboard')
             ->assertStatus(200);
     }
 
@@ -197,10 +197,9 @@ class AuthFlowTest extends TestCase
 
         $cookie = $loginResponse->getCookie('jwt_token');
 
-        // Currently, you might not have a redirect away from login built-in for JWT users sitting on '/'
-        // But if you do, testing it like this accurately simulates a client.
+        // Authenticated users are redirected away from /login by GuestMiddleware
         $this->withCookie('jwt_token', $cookie->getValue())
-            ->get('/')
-            ->assertStatus(200);
+            ->get('/login')
+            ->assertRedirect('/user-dashboard');
     }
 }

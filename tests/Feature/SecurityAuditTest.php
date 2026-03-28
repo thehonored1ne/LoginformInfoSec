@@ -81,10 +81,10 @@ class SecurityAuditTest extends TestCase
         $token = $loginRes->getCookie('jwt_token')->getValue();
 
         // Try to access Admin /home
-        $response = $this->withCookie('jwt_token', $token)->get('/home');
+        $response = $this->withCookie('jwt_token', $token)->get('/admin-dashboard');
 
         // Should be redirected back to their own dashboard
-        $response->assertRedirect(route('user.home'));
+        $response->assertRedirect(route('user.dashboard'));
     }
 
     /**
@@ -100,7 +100,8 @@ class SecurityAuditTest extends TestCase
         // Manually break the token signature (change the last character)
         $tamperedToken = substr($validToken, 0, -1) . ($validToken[strlen($validToken)-1] === 'A' ? 'B' : 'A');
 
-        $response = $this->withCookie('jwt_token', $tamperedToken)->get('/dashboard');
+        //s
+        $response = $this->withCookie('jwt_token', $tamperedToken)->get('/user-dashboard');
 
         // The middleware should reject the token and redirect to login
         $response->assertRedirect(route('login'));
