@@ -11,9 +11,14 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        $middleware->validateCsrfTokens(except: [
+            'api/*',
+        ]);
+
         $middleware->alias([
-            'register.limit' => \App\Http\Middleware\RegisterRateLimit::class,
+            'secure.throttle' => \App\Http\Middleware\SecurityThrottle::class,
             'jwt.auth' => \App\Http\Middleware\JwtMiddleware::class,
+            'guest' => \App\Http\Middleware\GuestMiddleware::class,
             'role' => \App\Http\Middleware\RoleMiddleware::class,
         ]);
     })

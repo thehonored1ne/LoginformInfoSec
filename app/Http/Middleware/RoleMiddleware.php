@@ -26,9 +26,9 @@ class RoleMiddleware
 
             // Redirect based on role if unauthorized
             if ($user && $user->role === 'admin') {
-                return redirect()->route('home'); // or admin home
+                return redirect()->route('admin.dashboard');
             } elseif ($user && $user->role === 'user') {
-                return redirect()->route('user.home');
+                return redirect()->route('user.dashboard');
             }
 
             return redirect()->route('login')->withErrors(['email' => 'Unauthorized access.']);

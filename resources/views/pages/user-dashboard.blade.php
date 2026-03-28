@@ -1,4 +1,4 @@
-@extends('layouts.home')
+@extends('layouts.dashboard')
 
 @section('content')
 
@@ -21,7 +21,7 @@
         <div class="px-6 py-5 border-b border-gray-200 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <img src="https://images.vexels.com/media/users/3/137578/isolated/preview/c895a61e637f53ac91d5faf634c84794-cube-logo-geometric-polygonal.png" class="h-8 w-8" />
-                <span class="font-bold text-gray-900 text-lg">User Portal</span>
+                <span class="font-bold text-gray-900 text-lg">NEXUS</span>
             </div>
             {{-- Close button for mobile only --}}
             <button onclick="toggleSidebar()" class="lg:hidden p-1 text-gray-500 hover:bg-gray-100 rounded-md">
@@ -35,11 +35,11 @@
             <p class="text-xs font-semibold text-gray-400 uppercase tracking-widest px-3 mb-2">Workspace</p>
             <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-black text-white text-sm font-semibold shadow-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
-                My Dashboard
+                Dashboard
             </a>
             <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-100 text-sm font-semibold transition-all">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
-                My Tasks
+                Tasks
             </a>
             <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 hover:bg-gray-100 text-sm font-semibold transition-all">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>

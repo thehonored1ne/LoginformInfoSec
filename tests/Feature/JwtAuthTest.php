@@ -22,15 +22,15 @@ test('a user can login and receive a jwt cookie', function () {
         'password' => 'supersecret',
     ]);
 
-    $response->assertRedirect('/dashboard');
+    $response->assertRedirect('/user-dashboard');
     $response->assertCookie('jwt_token');
 });
 
-test('a user cannot access home page without the jwt cookie', function () {
-    $response = $this->get('/home');
+test('a user cannot access admin page without the jwt cookie', function () {
+    $response = $this->get('/admin-dashboard');
 
-    // Should redirect back to login (which is mapped to /)
-    $response->assertRedirect('/');
+    // Should redirect back to login
+    $response->assertRedirect('/login');
 });
 
 test('a user can access their dashboard with valid jwt cookie', function () {
@@ -51,7 +51,7 @@ test('a user can access their dashboard with valid jwt cookie', function () {
     $cookie = $loginResponse->getCookie('jwt_token');
     
     // Request /dashboard with the cookie
-    $homeResponse = $this->withCookie('jwt_token', $cookie->getValue())->get('/dashboard');
+    $homeResponse = $this->withCookie('jwt_token', $cookie->getValue())->get('/user-dashboard');
 
     $homeResponse->assertStatus(200);
 });
@@ -59,7 +59,7 @@ test('a user can access their dashboard with valid jwt cookie', function () {
 test('a user logging out loses the jwt cookie', function () {
     $response = $this->post('/logout');
 
-    $response->assertRedirect('/');
+    $response->assertRedirect('/login');
     
     // Cookie should be expired
     $cookie = $response->headers->getCookies()[0];

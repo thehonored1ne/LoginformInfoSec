@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Services\AuthRateLimiterService;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 
@@ -13,7 +12,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton(AuthRateLimiterService::class);
+        //
     }
 
     /**
@@ -21,9 +20,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        RateLimiter::for('login', function () {
-            $service = app(AuthRateLimiterService::class);
-            return $service->configureLimiters();
-        });
+        //
     }
 }

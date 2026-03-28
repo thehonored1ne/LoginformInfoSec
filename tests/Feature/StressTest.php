@@ -103,7 +103,7 @@ class StressTest extends TestCase
         $token2 = $response2->getCookie('jwt_token')->getValue();
 
         // Both sessions should work independently
-        $this->withCookie('jwt_token', $token1)->get('/home')->assertStatus(200);
-        $this->withCookie('jwt_token', $token2)->get('/home')->assertStatus(200);
+        $this->withCookie('jwt_token', $token1)->get('/admin-dashboard')->assertStatus(200);
+        $this->withCookie('jwt_token', $token2)->get('/admin-dashboard')->assertStatus(200);
     }
 }

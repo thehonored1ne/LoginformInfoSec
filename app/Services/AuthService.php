@@ -10,37 +10,17 @@ use Illuminate\Support\Facades\RateLimiter;
 class AuthService
 {
     public function __construct(private JwtService $jwtService) {}
-    public function login(array $data, $request): array|string|false
+    
+    public function login(array $data, $request, string $prefix = 'login'): array|string
     {
-        $userOrError = $this->validateCredentials($data, $request, 'login');
+        $userOrError = $this->validateCredentials($data, $request, $prefix);
 
         if (is_string($userOrError)) {
-            return $userOrError; // Rate limit message or false equivalent
+            return $userOrError; // Should not happen often as middleware usually blocks first
         }
 
         if (!$userOrError) {
-            return false;
-        }
-
-        // Success — generate JWT for web login instead of traditional session
-        $token = $this->jwtService->generateToken($userOrError);
-
-        return [
-            'user' => $userOrError,
-            'token' => $token
-        ];
-    }
-
-    public function apiLogin(array $data, $request): array|string
-    {
-        $userOrError = $this->validateCredentials($data, $request, 'api-login');
-
-        if (is_string($userOrError)) {
-            return $userOrError; // Rate limit message
-        }
-
-        if (!$userOrError) {
-            return "Invalid credentials.";
+            return "Invalid email or password.";
         }
 
         // Success — generate JWT
@@ -57,12 +37,6 @@ class AuthService
         $email    = strtolower(trim($data['email']));
         $password = $data['password'];
         $key      = $rateLimitPrefix . ':' . $email . '|' . $request->ip();
-
-        // Check rate limit
-        if (RateLimiter::tooManyAttempts($key, 5)) {
-            $seconds = RateLimiter::availableIn($key);
-            return "Too many login attempts. Please try again in {$seconds} seconds.";
-        }
 
         $user = UserModel::where('email', $email)->first();
 
